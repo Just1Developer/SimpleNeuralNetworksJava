@@ -1,5 +1,6 @@
 package net.justonedev.neural;
 
+import lombok.Getter;
 import net.justonedev.neural.activation.ActivationFunction;
 import net.justonedev.neural.activation.ReLU;
 import net.justonedev.neural.regularization.Regularizer;
@@ -9,14 +10,18 @@ import java.util.List;
 
 public class NeuralNetwork {
 
+    @Getter
+    private final NeuronLayer inputLayer;
+    @Getter
     private final List<NeuronLayer> hiddenLayers;
+    @Getter
     private final NeuronLayer outputLayer;
 
     private final Regularizer regularizer;
 
     public NeuralNetwork(int inputs, int outputs, int hiddenLayers, int hiddenLayerSize, ActivationFunction activationFunction, Regularizer regularizer, int initializerSeed) {
         Initializer initializer = new Initializer(initializerSeed);
-        NeuronLayer inputLayer = new NeuronLayer(inputs, new ReLU(), initializer); // Doesn't matter, inputLayer is just a container
+        this.inputLayer = new NeuronLayer(inputs, new ReLU(), initializer); // Doesn't matter, inputLayer is just a container
         this.hiddenLayers = new ArrayList<>(hiddenLayers);
         for (int i = 0; i < hiddenLayers; i++) {
             this.hiddenLayers.add(new NeuronLayer(hiddenLayerSize, activationFunction, initializer));
@@ -33,11 +38,17 @@ public class NeuralNetwork {
     }
 
     public double[] think(double[] input) {
-        double[] currentData = input;
+        double[] currentData = trimToFit(input, inputLayer.getSize());
         for (NeuronLayer layer : hiddenLayers) {
             currentData = layer.forwardPass(currentData);
         }
         return outputLayer.forwardPass(currentData);
+    }
+
+    private static double[] trimToFit(double[] input, int size) {
+        double[] result = new double[size];
+        System.arraycopy(input, 0, result, 0, Math.min(size, input.length));
+        return result;
     }
 
 }

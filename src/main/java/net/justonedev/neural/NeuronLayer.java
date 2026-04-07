@@ -1,5 +1,6 @@
 package net.justonedev.neural;
 
+import lombok.Getter;
 import lombok.Setter;
 import net.justonedev.neural.activation.ActivationFunction;
 
@@ -7,6 +8,7 @@ public class NeuronLayer {
     @Setter
     private ActivationFunction activationFunction;
     private final Initializer initializer;
+    @Getter
     private final Neuron[] neurons;
 
     public NeuronLayer(int neurons, ActivationFunction activationFunction, Initializer initializer) {
