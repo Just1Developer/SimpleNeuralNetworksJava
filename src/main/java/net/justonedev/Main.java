@@ -22,7 +22,7 @@ public final class Main {
         var result = neuralNetwork.think(new double[] { 1, 2, 3 });
         print(result);
 
-        new Window(neuralNetwork, 0.5);
+        new Window(neuralNetwork, 30);
     }
 
     private static void print(double[] array) {
