@@ -25,7 +25,7 @@ public class Canvas extends JPanel {
     private static final int LINE_WIDTH = 1;
 
     private static final int NEURON_SPACING = (int) (NEURON_SIZE * 0.3);
-    private static final int LAYER_SPACING = NEURON_SIZE * 5;
+    private static final int LAYER_SPACING = NEURON_SIZE * 10;
 
     private static final int X_OFFSET = 10;
     private static final int Y_OFFSET = 200;
@@ -42,6 +42,8 @@ public class Canvas extends JPanel {
 
     private final Window window;
     private final List<Drawable> drawables;
+
+    private final Map<Line, Float> brightness = new HashMap<>();
 
     @Getter
     private int cameraOffsetX;
@@ -83,21 +85,23 @@ public class Canvas extends JPanel {
                 case LINE -> {
                     Line line = (Line) drawable;
                     graphics.setStroke(new BasicStroke(lineWidth));
-                    graphics.setColor(NEURON_CONNECTION_COLOR);
+
+                    //region brightness
+                    float brightness;
+                    if (this.brightness.containsKey(line)) {
+                        brightness = this.brightness.get(line);
+                    } else {
+                        brightness = (float) (Math.random() * 0.6 + 0.2);
+                        this.brightness.put(line, brightness);
+                    }
+                    //endregion
+
+                    graphics.setColor(Color.getHSBColor(1, 0, brightness));
                     graphics.drawLine(line.getCanvasSourceX(this) + neuronCenterOffset, line.getCanvasSourceY(this) + neuronCenterOffset,
                             line.getCanvasTargetX(this) + neuronCenterOffset, line.getCanvasTargetY(this) + neuronCenterOffset);
                 }
             }
         }
-    }
-
-    private void drawNeuronLayer(Graphics2D graphics, NeuronLayer neuronLayer, Reference<Integer> xRef) {
-        int y = 10;
-        for (Neuron _ : neuronLayer.getNeurons()) {
-            graphics.drawOval(xRef.get(), y, 10, 10);
-            y += 15;
-        }
-        xRef.set(xRef.get() + 50);
     }
 
     private static class Reference<T> {
@@ -169,14 +173,14 @@ public class Canvas extends JPanel {
         double oldZoomLevel = zoomLevel;
         zoomLevel = Math.max(MIN_ZOOM_LEVEL, zoomLevel - ZOOM_STEP);
         double relativeUpdate = oldZoomLevel - zoomLevel;
-        updateCameraPosition((int) (relativeUpdate * getWidth()), (int) (relativeUpdate * getHeight()));
+        updateCameraPosition((int) (relativeUpdate * getWidth() / 2), (int) (relativeUpdate * getHeight() / 2));
     }
 
     public void zoomIn() {
         double oldZoomLevel = zoomLevel;
         zoomLevel = Math.min(MAX_ZOOM_LEVEL, zoomLevel + ZOOM_STEP);
         double relativeUpdate = oldZoomLevel - zoomLevel;
-        updateCameraPosition((int) (relativeUpdate * getWidth()), (int) (relativeUpdate * getHeight()));
+        updateCameraPosition((int) (relativeUpdate * getWidth() / 2), (int) (relativeUpdate * getHeight() / 2));
     }
 
     public void updateCameraPosition(int deltaX, int deltaY) {
