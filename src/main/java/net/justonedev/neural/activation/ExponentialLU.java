@@ -14,6 +14,6 @@ public class ExponentialLU implements ActivationFunction {
 
     @Override
     public double derivative(double value) {
-        return value < 0 ? alphaValue * (Math.exp(value)) : 1;
+        return value < 0 ? alphaValue * (Math.exp(value)) : value == 0 ? 0 : 1;
     }
 }

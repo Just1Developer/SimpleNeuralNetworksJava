@@ -50,6 +50,7 @@ public class NeuralNetwork {
 
     public double[] think(double[] input) {
         double[] currentData = trimToFit(input, inputLayer.getSize());
+        inputLayer.setNeuronData(currentData);
         for (NeuronLayer layer : hiddenLayers) {
             currentData = layer.forwardPass(currentData);
         }

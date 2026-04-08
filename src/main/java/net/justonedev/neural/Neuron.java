@@ -40,8 +40,14 @@ public class Neuron {
 
     public void adjustWeights(double[] previousLayerNeuronValues, double delta, double learningRate, double weightDecayFactor) {
         for (int i = 0; i < weights.length; i++) {
-            weights[i] -= learningRate * delta * previousLayerNeuronValues[i];
+            weights[i] += learningRate * delta * previousLayerNeuronValues[i];
             weights[i] *= (1 - learningRate * weightDecayFactor);
         }
+    }
+
+    // ----------------------------- DEBUG -----------------------------
+
+    public void debug_setWeights(double[] weights) {
+        this.weights = weights;
     }
 }

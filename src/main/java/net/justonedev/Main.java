@@ -9,7 +9,6 @@ import net.justonedev.test.RingDistanceEvaluator;
 import net.justonedev.test.TestGenerator;
 
 import java.util.List;
-import java.util.StringJoiner;
 
 public final class Main {
     private static final int BOARD_WIDTH = 8;
@@ -41,13 +40,5 @@ public final class Main {
 
         SupervisedTrainer trainer = new SupervisedTrainer(neuralNetwork, new RingDistanceEvaluator(), generator, TRAINING_DATA_SIZE, TEST_DATA_SIZE);
         trainer.train(2);
-    }
-
-    private static void print(double[] array) {
-        StringJoiner joiner = new StringJoiner(", ");
-        for (double value : array) {
-            joiner.add(String.valueOf(value));
-        }
-        System.out.printf("[%s]%n", joiner);
     }
 }

@@ -8,6 +8,6 @@ public class ReLU implements ActivationFunction {
 
     @Override
     public double derivative(double value) {
-        return value < 0 ? 0 : 1;
+        return value <= 0 ? 0 : 1;
     }
 }

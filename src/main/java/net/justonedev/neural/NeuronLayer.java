@@ -3,7 +3,10 @@ package net.justonedev.neural;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.justonedev.DebugMiniExample;
 import net.justonedev.neural.activation.ActivationFunction;
+
+import java.util.Arrays;
 
 public class NeuronLayer {
     @Setter(AccessLevel.PACKAGE)
@@ -50,15 +53,9 @@ public class NeuronLayer {
         double[] deltas = new double[neurons.length];
         for (int i = 0; i < neurons.length; i++) {
             double error = 0;
-            /*double[] weights = forwardLayer.neurons[i].getWeights();
-            for (int j = 0; j < weights.length; j++) {
-                // size of weights should be the same size as deltas
-                error += weights[j] * deltasOfNextLayer[j];
-            }*/
             double[] weights;
             for (int j = 0; j < forwardLayer.neurons.length; j++) {
                 weights = forwardLayer.neurons[j].getWeights();
-                // todo dat hier explodiert und macht ebenfalls noch keinen Sinn glaub ich
                 error += weights[i] * deltasOfNextLayer[j];
             }
             error *= activationFunction.derivative(neuronStates[i]);
@@ -90,6 +87,13 @@ public class NeuronLayer {
         return delta;
     }
 
+    public void setNeuronData(double[] neuronData) {
+        if (neuronData.length != neuronStates.length) {
+            throw new IllegalArgumentException("Neuron Data Length Mismatch: Expected Neuron Data of size %d, but got size %d".formatted(neuronStates.length, neuronData.length));
+        }
+        this.neuronStates = Arrays.copyOf(neuronData, neuronStates.length);
+    }
+
     /**
      * Begins the backpropagation and weight adjustment process. Should only be called on
      * the output layer, along with the expected value(s) for the input.
@@ -100,9 +104,34 @@ public class NeuronLayer {
         double[] deltas = calculateOutputDelta(expectedValues);
         NeuronLayer layer = this;
         while (layer.previousLayer != null) {
+            // First, do backpropagation. This accesses this layers' weights, so we
+            // have to update this layers' weights *after* calculating the deltas for the previous layer.
+            double[] newDeltas = layer.previousLayer.calculateBackpropagationDeltas(deltas, layer);
             layer.adjustWeights(deltas);  // when previousLayer is null, we are on the input layer, which has no weights
-            deltas = layer.previousLayer.calculateBackpropagationDeltas(deltas, layer);
+            deltas = newDeltas;
             layer = layer.previousLayer;
+        }
+    }
+
+    public void manualExampleBackpropagation(double[] expectedValue) {
+        var delta = calculateOutputDelta(expectedValue);
+        var outputLayer = this;
+        var hiddenLayer = previousLayer;
+
+
+        var hiddenDeltas = hiddenLayer.calculateBackpropagationDeltas(delta, outputLayer);
+        System.out.println("Output Deltas: " + DebugMiniExample.stringify(delta));
+        System.out.println("Hidden Deltas: " + DebugMiniExample.stringify(hiddenDeltas));
+
+        hiddenLayer.adjustWeights(hiddenDeltas);
+        System.out.println();
+    }
+
+    // ----------------------------- DEBUG -----------------------------
+
+    public void debug_setWeights(double[]... valueMatrix) {
+        for (int i = 0; i < neurons.length; i++) {
+            neurons[i].debug_setWeights(valueMatrix[i]);
         }
     }
 }
