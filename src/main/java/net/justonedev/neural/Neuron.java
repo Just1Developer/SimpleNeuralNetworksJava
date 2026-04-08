@@ -1,9 +1,12 @@
 package net.justonedev.neural;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import net.justonedev.neural.activation.ActivationFunction;
 import net.justonedev.test.ClosedInterval;
 
 public class Neuron {
+    @Getter(AccessLevel.PACKAGE)
     private double[] weights;
     private final double bias;
     private final ActivationFunction activationFunction;
@@ -13,13 +16,13 @@ public class Neuron {
         this.activationFunction = activationFunction;
     }
 
-    public void initialize(int outputs, Initializer initializer) {
-        this.initialize(outputs, initializer, null);
+    public void initialize(int inputs, Initializer initializer) {
+        this.initialize(inputs, initializer, null);
     }
 
-    public void initialize(int outputs, Initializer initializer, ClosedInterval valueRange) {
-        weights = new double[outputs];
-        for (int i = 0; i < outputs; i++) {
+    public void initialize(int inputs, Initializer initializer, ClosedInterval valueRange) {
+        weights = new double[inputs];
+        for (int i = 0; i < inputs; i++) {
             weights[i] = initializer.nextDouble(valueRange);
         }
     }
@@ -33,5 +36,12 @@ public class Neuron {
             sum += weights[i] * inputs[i];
         }
         return activationFunction.activate(sum);
+    }
+
+    public void adjustWeights(double[] previousLayerNeuronValues, double delta, double learningRate, double weightDecayFactor) {
+        for (int i = 0; i < weights.length; i++) {
+            weights[i] -= learningRate * delta * previousLayerNeuronValues[i];
+            weights[i] *= (1 - learningRate * weightDecayFactor);
+        }
     }
 }

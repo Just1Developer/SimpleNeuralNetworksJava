@@ -9,6 +9,11 @@ public class ExponentialLU implements ActivationFunction {
 
     @Override
     public double activate(double value) {
-        return value < 0 ? alphaValue * (Math.exp(value) - 1) : value;
+        return value < 0 ? alphaValue * (Math.exp(value) - 1) : 1;
+    }
+
+    @Override
+    public double derivative(double value) {
+        return value < 0 ? alphaValue * (Math.exp(value)) : 1;
     }
 }

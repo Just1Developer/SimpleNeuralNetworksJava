@@ -11,4 +11,9 @@ public class LeakyReLU implements ActivationFunction {
     public double activate(double value) {
         return value < 0 ? alphaValue * value : value;
     }
+
+    @Override
+    public double derivative(double value) {
+        return value < 0 ? alphaValue : 1;
+    }
 }

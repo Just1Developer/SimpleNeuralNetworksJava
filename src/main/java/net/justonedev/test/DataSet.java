@@ -33,7 +33,10 @@ public class DataSet {
     }
 
     public KMeansDataSet getKMeansDataSet(int k) {
-        List<TestDatapoint> trainingData = this.trainingData;
+        if (k >= kValidationSegments.size()) {
+            return null;
+        }
+        List<TestDatapoint> trainingData = new ArrayList<>();
         List<TestDatapoint> validationData = kValidationSegments.get(k);
         List<TestDatapoint> testData = new ArrayList<>(this.testData);
         for (int i = 0; i < kValidationSegments.size(); i++) {

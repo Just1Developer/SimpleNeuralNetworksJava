@@ -1,5 +1,6 @@
 package net.justonedev.neural;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import net.justonedev.neural.activation.ActivationFunction;
 import net.justonedev.neural.activation.ReLU;
@@ -17,24 +18,34 @@ public class NeuralNetwork {
     @Getter
     private final NeuronLayer outputLayer;
 
+    @SuppressWarnings({"unused", "FieldCanBeLocal"})
     private final Regularizer regularizer;
+    @Getter(AccessLevel.PACKAGE)
+    private final double weightDecayFactor;
 
-    public NeuralNetwork(int inputs, int outputs, int hiddenLayers, int hiddenLayerSize, ActivationFunction activationFunction, Regularizer regularizer, int initializerSeed) {
+    @Getter
+    private final double learningRate;
+
+    public NeuralNetwork(int inputs, int outputs, int hiddenLayers, int hiddenLayerSize,
+                         ActivationFunction activationFunction, Regularizer regularizer,
+                         int initializerSeed, double learningRate) {
         Initializer initializer = new Initializer(initializerSeed);
-        this.inputLayer = new NeuronLayer(inputs, new ReLU(), initializer); // Doesn't matter, inputLayer is just a container
+        this.inputLayer = new NeuronLayer(this, inputs, new ReLU(), initializer); // Doesn't matter, inputLayer is just a container
         this.hiddenLayers = new ArrayList<>(hiddenLayers);
         for (int i = 0; i < hiddenLayers; i++) {
-            this.hiddenLayers.add(new NeuronLayer(hiddenLayerSize, activationFunction, initializer));
+            this.hiddenLayers.add(new NeuronLayer(this, hiddenLayerSize, activationFunction, initializer));
             if (i == 0) {
                 this.hiddenLayers.getFirst().connect(inputLayer);
             } else {
                 this.hiddenLayers.get(i).connect(this.hiddenLayers.get(i - 1));
             }
         }
-        this.outputLayer = new NeuronLayer(outputs, activationFunction, initializer);
+        this.outputLayer = new NeuronLayer(this, outputs, activationFunction, initializer);
         this.outputLayer.connect(hiddenLayers == 0 ? inputLayer : this.hiddenLayers.getLast());
 
         this.regularizer = regularizer;
+        this.weightDecayFactor = regularizer.getRegularizingFactor();
+        this.learningRate = learningRate;
     }
 
     public double[] think(double[] input) {
