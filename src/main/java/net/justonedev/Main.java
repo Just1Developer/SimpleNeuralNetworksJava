@@ -29,7 +29,7 @@ public final class Main {
                 HIDDEN_LAYERS,
                 HIDDEN_LAYERS_SIZE,
                 new LeakyReLU(0.15),
-                new WeightDecayRegularizer(0.1),
+                new WeightDecayRegularizer(0.9),
                 0,
                 LEARNING_RATE);
 

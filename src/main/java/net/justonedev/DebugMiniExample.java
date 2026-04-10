@@ -34,6 +34,19 @@ public class DebugMiniExample {
         var yHat = neuralNetwork.think(x);
         System.out.printf("yHat: %s%n", stringify(yHat));
 
+        for (int i = 0; i < 100; i++) {
+            neuralNetwork.getOutputLayer().beginBackPropagation(y);
+        }
+        neuralNetwork.getOutputLayer().beginBackPropagation(y);
+        neuralNetwork.getOutputLayer().beginBackPropagation(y);
+        neuralNetwork.getOutputLayer().beginBackPropagation(y);
+        neuralNetwork.getOutputLayer().beginBackPropagation(y);
+        neuralNetwork.getOutputLayer().beginBackPropagation(y);
+        neuralNetwork.getOutputLayer().beginBackPropagation(y);
+        neuralNetwork.getOutputLayer().beginBackPropagation(y);
+        neuralNetwork.getOutputLayer().beginBackPropagation(y);
+        neuralNetwork.getOutputLayer().beginBackPropagation(y);
+        neuralNetwork.getOutputLayer().beginBackPropagation(y);
         neuralNetwork.getOutputLayer().beginBackPropagation(y);
         //neuralNetwork.getOutputLayer().manualExampleBackpropagation(y);
 

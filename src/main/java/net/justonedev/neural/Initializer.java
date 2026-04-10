@@ -5,7 +5,7 @@ import net.justonedev.test.ClosedInterval;
 import java.util.Random;
 
 public class Initializer {
-    private static final ClosedInterval DEFAULT_INTERVAL = new ClosedInterval(-2, 2);
+    private static final ClosedInterval DEFAULT_INTERVAL = new ClosedInterval(-0.5, 0.5);
 
     private final Random random;
     private final ClosedInterval valueInterval;
