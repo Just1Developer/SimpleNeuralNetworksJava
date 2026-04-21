@@ -29,18 +29,17 @@ public class NeuralNetwork {
     public NeuralNetwork(int inputs, int outputs, int hiddenLayers, int hiddenLayerSize,
                          ActivationFunction activationFunction, Regularizer regularizer,
                          int initializerSeed, double learningRate) {
-        Initializer initializer = new Initializer(initializerSeed);
-        this.inputLayer = new NeuronLayer(this, inputs, new ReLU(), initializer); // Doesn't matter, inputLayer is just a container
+        this.inputLayer = new NeuronLayer(this, inputs, new ReLU(), initializerSeed); // Doesn't matter, inputLayer is just a container
         this.hiddenLayers = new ArrayList<>(hiddenLayers);
         for (int i = 0; i < hiddenLayers; i++) {
-            this.hiddenLayers.add(new NeuronLayer(this, hiddenLayerSize, activationFunction, initializer));
+            this.hiddenLayers.add(new NeuronLayer(this, hiddenLayerSize, activationFunction, initializerSeed + 1));
             if (i == 0) {
                 this.hiddenLayers.getFirst().connect(inputLayer);
             } else {
                 this.hiddenLayers.get(i).connect(this.hiddenLayers.get(i - 1));
             }
         }
-        this.outputLayer = new NeuronLayer(this, outputs, activationFunction, initializer);
+        this.outputLayer = new NeuronLayer(this, outputs, activationFunction, initializerSeed - 1);
         this.outputLayer.connect(hiddenLayers == 0 ? inputLayer : this.hiddenLayers.getLast());
 
         this.regularizer = regularizer;

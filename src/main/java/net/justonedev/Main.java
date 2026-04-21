@@ -39,6 +39,6 @@ public final class Main {
         generator.configureGenerator(List.of(new ClosedInterval(0, 0), new ClosedInterval(1, 1)), BOARD_WIDTH, 0);
 
         SupervisedTrainer trainer = new SupervisedTrainer(neuralNetwork, new RingDistanceEvaluator(), generator, TRAINING_DATA_SIZE, TEST_DATA_SIZE);
-        trainer.train(2);
+        trainer.train(5);
     }
 }

@@ -3,6 +3,8 @@ package net.justonedev.neural;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.justonedev.neural.activation.ActivationFunction;
+import net.justonedev.neural.initialization.HeType;
+import net.justonedev.neural.initialization.Initializer;
 import net.justonedev.test.ClosedInterval;
 
 public class Neuron {
@@ -17,13 +19,11 @@ public class Neuron {
     }
 
     public void initialize(int inputs, Initializer initializer) {
-        this.initialize(inputs, initializer, null);
-    }
-
-    public void initialize(int inputs, Initializer initializer, ClosedInterval valueRange) {
         weights = new double[inputs];
+        System.out.println("Neuron has " + inputs + " inputs. Bounds should be " + HeType.HE_UNIFORM.getIntervalBorder(inputs) + " Weights are:");
         for (int i = 0; i < inputs; i++) {
-            weights[i] = initializer.nextDouble(valueRange);
+            weights[i] = initializer.nextDouble();
+            System.out.println(weights[i]);
         }
     }
 

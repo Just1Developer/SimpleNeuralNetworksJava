@@ -5,27 +5,30 @@ import lombok.Getter;
 import lombok.Setter;
 import net.justonedev.DebugMiniExample;
 import net.justonedev.neural.activation.ActivationFunction;
+import net.justonedev.neural.initialization.CustomInit;
+import net.justonedev.neural.initialization.HeUniform;
+import net.justonedev.neural.initialization.Initializer;
 
 import java.util.Arrays;
 
 public class NeuronLayer {
     @Setter(AccessLevel.PACKAGE)
     private ActivationFunction activationFunction;
-    private final Initializer initializer;
+    private final int initializerSeed;
     @Getter // public for canvas
     private final Neuron[] neurons;
     private double[] neuronStates;
     private NeuronLayer previousLayer;
     private final NeuralNetwork network;
 
-    public NeuronLayer(NeuralNetwork network, int neurons, ActivationFunction activationFunction, Initializer initializer) {
+    public NeuronLayer(NeuralNetwork network, int neurons, ActivationFunction activationFunction, int initializerSeed) {
         this.network = network;
         this.activationFunction = activationFunction;
         this.neurons = new Neuron[neurons];
+        this.initializerSeed = initializerSeed;
         for (int i = 0; i < neurons; i++) {
             this.neurons[i] = new Neuron(0, activationFunction);
         }
-        this.initializer = initializer;
         neuronStates = new double[neurons];
     }
 
@@ -36,6 +39,7 @@ public class NeuronLayer {
     public void connect(NeuronLayer previousLayer) {
         this.previousLayer = previousLayer;
         int outputs = previousLayer.getSize();
+        Initializer initializer = new CustomInit(initializerSeed, outputs);
         for (Neuron neuron : neurons) {
             neuron.initialize(outputs, initializer);
         }
